@@ -1,4 +1,3 @@
-//let page = 1;
 const BASE_URL = 'https://pixabay.com/api/';
 const KEY = '22363451-8577670099bbad87a35d9bf1c';
 

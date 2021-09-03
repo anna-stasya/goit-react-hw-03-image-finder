@@ -33,37 +33,40 @@ class ImageGallery extends React.Component {
               error: `Not found ${nextName}`,
               status: 'rejected',
             });
-          } else
+          } else {
             this.setState(prevState => ({
               cardImage: cardImage.hits,
               status: 'resolved',
-              page: prevState.page + 1,
             }));
+          }
+        })
+        .catch(error => this.setState({ error, status: 'rejected' }));
+    }
+
+    if (this.state.page !== 1) {
+      cardAPI
+        .fetchCard(this.props.imageName, this.state.page)
+        .then(cardImage =>
+          this.setState(prevState => ({
+            cardImage: [...prevState.cardImage, ...cardImage.hits],
+            status: 'resolved',
+          })),
+        )
+        .then(() => {
+          window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: 'smooth',
+          });
         })
         .catch(error => this.setState({ error, status: 'rejected' }));
     }
   }
 
   loadMoreBtn = () => {
-    cardAPI
-      .fetchCard(this.props.imageName, this.state.page)
-      .then(cardImage =>
-        this.setState(prevState => ({
-          cardImage: [...prevState.cardImage, ...cardImage.hits],
-          status: 'resolved',
-          page: prevState.page + 1,
-        })),
-      )
-      .then(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: 'smooth',
-        });
-      })
-      .catch(error => this.setState({ error, status: 'rejected' }));
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
   };
-
-  //};
 
   //====открыть модалку ===
   onOpenModal = (largeImageUR, alt) => {
